@@ -5,11 +5,11 @@ import (
 )
 
 type PullRequest struct {
-	PullRequestId   int
+	PullRequestId   string
 	PullRequestName string
 	AuthorId        int
 	IsMerged        bool
-	Reviewers       *[]User
+	Reviewers       []string
 	CreatedAt       time.Time
 	MergedAt        time.Time
 }

@@ -1,7 +1,6 @@
 package models
 
-type Model struct {
+type Team struct {
 	TeamName string
 	Members  *[]User
-	status   ``
 }

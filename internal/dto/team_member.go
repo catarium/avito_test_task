@@ -1,7 +1,7 @@
 package dto
 
 type TeamMember struct {
-	UserId   int    `json:"user_id"`
-	UserName string `json:"user_name"`
+	UserId   string `json:"user_id"`
+	UserName string `json:"username"`
 	IsActive bool   `json:"is_active"`
 }

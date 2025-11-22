@@ -9,11 +9,14 @@ const (
 	ErrorNotAssigned ErrorCode = "NOT_ASSIGNED"
 	ErrorNoCandidate ErrorCode = "NO_CANDIDATE"
 	ErrorNotFound    ErrorCode = "NOT_FOUND"
+	ErroUnknown      ErrorCode = "UNKNOWN"
 )
 
+type ErrorDtoContent struct {
+	Code    ErrorCode `json:"code"`
+	Message string    `json:"message"`
+}
+
 type ErrorDto struct {
-	Error struct {
-		Code    ErrorCode `json:"code"`
-		Message string    `json:"message"`
-	}
+	Error ErrorDtoContent `json:"error"`
 }
