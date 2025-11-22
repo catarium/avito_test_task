@@ -1,4 +1,4 @@
-package team
+package pullrequest
 
 import (
 	"context"
@@ -49,7 +49,8 @@ func (pr PullRequestRepository) Reassign(pullRequestId string, oldReviewerId str
 	query := `SELECT user_id FROM users u1 JOIN users u2 ON u2.user_id = $1 JOIN pull_requests pr ON pr.pull_request_id = $2 WHERE
 		u1.team_name = u2.team_name and
 		u1.user_id != u2.user_id and
-		u1.user_id != pr.author_id`
+		u1.user_id != pr.author_id
+		u1.is_active = true`
 	row := pr.DB.QueryRow(query, oldReviewerId, pullRequestId)
 	err := row.Scan(&new_user_id)
 	if err != nil {
@@ -63,4 +64,21 @@ func (pr PullRequestRepository) Reassign(pullRequestId string, oldReviewerId str
 	query = "SELECT * FROM pull_requests WHERE pull_request_id = $1"
 	row = pr.DB.QueryRow(query, pullRequestId)
 	return pr.toModel(row)
+}
+
+func (pr PullRequestRepository) GetByReviewer(reviewerId string) ([]models.PullRequest, error) {
+	res := []models.PullRequest{}
+	query := `SELECT pr.pull_request_id, pr.pull_request_name, pr.author_id, pr.status
+	FROM pull_requests pr JOIN reviews r ON pr.pull_request_id = r.pull_request_id
+	WHERE r.user_id = $1;`
+	row, err := pr.DB.Query(query, reviewerId)
+	if err != nil {
+		return nil, err
+	}
+	var pullRequest models.PullRequest
+	for row.Next() {
+		row.Scan(&pullRequest.PullRequestId, &pullRequest.PullRequestName, &pullRequest.AuthorId, &pullRequest.IsMerged)
+		res = append(res, pullRequest)
+	}
+	return res, nil
 }

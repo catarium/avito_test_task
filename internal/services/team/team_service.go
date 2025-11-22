@@ -7,6 +7,7 @@ import (
 	"github.com/catarium/avito_test_task/internal/db/repositories/team"
 	"github.com/catarium/avito_test_task/internal/db/repositories/user"
 	"github.com/catarium/avito_test_task/internal/dto"
+	"github.com/catarium/avito_test_task/internal/services"
 )
 
 type TeamService struct {
@@ -18,29 +19,29 @@ func (ts TeamService) AddTeam(teamName string, members []dto.TeamMember) (*dto.T
 	res := dto.Team{TeamName: teamName}
 	exists, err := ts.TeamRepository.Exists(teamName)
 	if err != nil {
-		return nil, ErrUnknown(err.Error()), http.StatusInternalServerError
+		return nil, services.ErrUnknown(err.Error()), http.StatusInternalServerError
 	}
 	if exists {
 		return nil, ErrTeamExists(teamName), http.StatusBadRequest
 	}
 	_, err = ts.TeamRepository.CreateTeam(teamName)
 	if err != nil {
-		return nil, ErrUnknown(err.Error()), http.StatusInternalServerError
+		return nil, services.ErrUnknown(err.Error()), http.StatusInternalServerError
 	}
 	for _, m := range members {
 		exists, err := ts.UserRepository.Exists(m.UserId)
 		if err != nil {
-			return nil, ErrUnknown(err.Error()), http.StatusInternalServerError
+			return nil, services.ErrUnknown(err.Error()), http.StatusInternalServerError
 		}
 		if exists {
 			_, err := ts.UserRepository.Update(m.UserId, m.UserName, teamName, m.IsActive)
 			if err != nil {
-				return nil, ErrUnknown(err.Error()), http.StatusInternalServerError
+				return nil, services.ErrUnknown(err.Error()), http.StatusInternalServerError
 			}
 		} else {
 			_, err := ts.UserRepository.Create(m.UserId, m.UserName, teamName, m.IsActive)
 			if err != nil {
-				return nil, ErrUnknown(err.Error()), http.StatusInternalServerError
+				return nil, services.ErrUnknown(err.Error()), http.StatusInternalServerError
 			}
 		}
 		res.Members = append(res.Members, m)
@@ -52,10 +53,10 @@ func (ts TeamService) GetTeam(teamName string) (*dto.Team, *dto.ErrorDto, int) {
 	res := dto.Team{TeamName: teamName}
 	exists, err := ts.TeamRepository.Exists(teamName)
 	if err != nil {
-		return nil, ErrUnknown(err.Error()), http.StatusInternalServerError
+		return nil, services.ErrUnknown(err.Error()), http.StatusInternalServerError
 	}
 	if !exists {
-		return nil, &ErrTeamNotFound, http.StatusNotFound
+		return nil, &services.ErrNotFound, http.StatusNotFound
 	}
 	members, err := ts.UserRepository.GetByTeamName(teamName)
 	if err == sql.ErrNoRows {

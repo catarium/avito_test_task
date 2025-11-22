@@ -9,6 +9,7 @@ const (
 	ErrorNotAssigned ErrorCode = "NOT_ASSIGNED"
 	ErrorNoCandidate ErrorCode = "NO_CANDIDATE"
 	ErrorNotFound    ErrorCode = "NOT_FOUND"
+	ErrorInvalidBody ErrorCode = "INVALID_BODY"
 	ErroUnknown      ErrorCode = "UNKNOWN"
 )
 

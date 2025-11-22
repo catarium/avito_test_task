@@ -1,8 +1,13 @@
 package dto
 
-type PullRequestShort struct {
-	PullRequestId   int      `json:"pull_request_id"`
+type PullRequestShortDto struct {
+	PullRequestId   string   `json:"pull_request_id"`
 	PullRequestName string   `json:"pull_request_name"`
-	AuthorId        int      `json:"author_id"`
+	AuthorId        string   `json:"author_id"`
 	Status          PRStatus `json:"status"`
+}
+
+type UserPullRequestShortDto struct {
+	UserId       string                `json:"user_id"`
+	PullRequests []PullRequestShortDto `json:"pull_requests"`
 }

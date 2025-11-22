@@ -10,6 +10,7 @@ import (
 	"github.com/catarium/avito_test_task/internal/db/repositories/team"
 	"github.com/catarium/avito_test_task/internal/db/repositories/user"
 	"github.com/catarium/avito_test_task/internal/dto"
+	"github.com/catarium/avito_test_task/internal/services"
 	teamService "github.com/catarium/avito_test_task/internal/services/team"
 	"github.com/catarium/avito_test_task/internal/utils/httputils"
 )
@@ -22,12 +23,17 @@ func (th TeamHandler) AddTeam(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
-		errResp := teamService.ErrUnknown(err.Error())
+		errResp := services.ErrUnknown(err.Error())
 		httputils.SendJSONError(w, errResp, 500)
 		return
 	}
 	team := dto.Team{}
-	json.Unmarshal(bodyBytes, &team)
+	err = json.Unmarshal(bodyBytes, &team)
+	if err != nil {
+		errResp := services.ErrInvalidJson(err.Error())
+		httputils.SendJSONError(w, errResp, 400)
+		return
+	}
 	_, errResp, code := th.teamService.AddTeam(team.TeamName, team.Members)
 	if errResp != nil {
 		httputils.SendJSONError(w, errResp, code)
@@ -35,7 +41,7 @@ func (th TeamHandler) AddTeam(w http.ResponseWriter, r *http.Request) {
 	}
 	res, err := json.Marshal(team)
 	if err != nil {
-		errResp := teamService.ErrUnknown(err.Error())
+		errResp := services.ErrUnknown(err.Error())
 		httputils.SendJSONError(w, errResp, 500)
 		return
 	}
@@ -52,7 +58,7 @@ func (th TeamHandler) GetTeam(w http.ResponseWriter, r *http.Request) {
 	}
 	res, err := json.Marshal(team)
 	if err != nil {
-		errResp := teamService.ErrUnknown(err.Error())
+		errResp := services.ErrUnknown(err.Error())
 		httputils.SendJSONError(w, errResp, 500)
 		return
 	}

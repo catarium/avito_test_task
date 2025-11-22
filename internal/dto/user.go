@@ -1,8 +1,12 @@
 package dto
 
-type User struct {
-	UserId   int    `json:"user_id"`
-	UserName string `json:"user_name"`
+type UserDtoContent struct {
+	UserId   string `json:"user_id"`
+	Username string `json:"username"`
 	TeamName string `json:"team_name"`
 	IsActive bool   `json:"is_active"`
+}
+
+type UserDto struct {
+	User UserDtoContent `json:"user"`
 }

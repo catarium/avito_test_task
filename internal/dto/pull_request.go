@@ -4,7 +4,7 @@ type PRStatus string
 
 const (
 	StatusOpen   PRStatus = "OPEN"
-	StatusMerged PRStatus = "Merged"
+	StatusMerged PRStatus = "MERGED"
 )
 
 type PullRequest struct {

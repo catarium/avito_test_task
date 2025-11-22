@@ -9,6 +9,7 @@ import (
 
 	"github.com/catarium/avito_test_task/internal/db"
 	"github.com/catarium/avito_test_task/internal/handlers/teams"
+	"github.com/catarium/avito_test_task/internal/handlers/users"
 	"github.com/catarium/avito_test_task/internal/middlewares"
 )
 
@@ -33,6 +34,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.Handle("/team/", http.StripPrefix("/team", teams.CreateTeamRouter(database)))
+	mux.Handle("/users/", http.StripPrefix("/users", users.CreateUserRouter(database)))
 
 	loggedMux := middlewares.LoggingMiddleware(mux)
 
