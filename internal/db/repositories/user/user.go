@@ -2,7 +2,6 @@ package user
 
 import (
 	"database/sql"
-	"fmt"
 
 	"github.com/catarium/avito_test_task/internal/db/models"
 )
@@ -25,7 +24,6 @@ func (ur UserRepository) Exists(userId string) (bool, error) {
 	row := ur.DB.QueryRow(query, userId)
 	res := 1
 	row.Scan(&res)
-	fmt.Printf("res is %d\n", res)
 	if (row.Err() == nil) && (res > 0) {
 		return true, nil
 	} else if (row.Err() == sql.ErrNoRows) || (res == 0) {

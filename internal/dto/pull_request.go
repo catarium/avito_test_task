@@ -8,11 +8,11 @@ const (
 )
 
 type PullRequest struct {
-	PullRequestId     int      `json:"pull_request_id"`
+	PullRequestId     string   `json:"pull_request_id"`
 	PullRequestName   string   `json:"pull_request_name"`
-	AuthorId          int      `json:"author_id"`
+	AuthorId          string   `json:"author_id"`
 	Status            PRStatus `json:"status"`
-	AssignedReviewers []int    `json:"assigned_reviewers"`
+	AssignedReviewers []string `json:"assigned_reviewers"`
 	CreatedAt         string   `json:"created_at"`
 	MergedAt          string   `json:"merged_at"`
 }

@@ -45,6 +45,7 @@ func (uh UserHandler) SetIsActive(w http.ResponseWriter, r *http.Request) {
 		httputils.SendJSONError(w, errResp, 500)
 		return
 	}
+	w.WriteHeader(code)
 	fmt.Fprintf(w, string(res))
 }
 
@@ -62,6 +63,7 @@ func (uh UserHandler) GetReview(w http.ResponseWriter, r *http.Request) {
 		httputils.SendJSONError(w, errResp, 500)
 		return
 	}
+	w.WriteHeader(code)
 	fmt.Fprintf(w, string(res))
 }
 

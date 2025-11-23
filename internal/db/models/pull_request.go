@@ -1,7 +1,7 @@
 package models
 
 import (
-	"time"
+	"database/sql"
 )
 
 type PullRequest struct {
@@ -10,6 +10,6 @@ type PullRequest struct {
 	AuthorId        string
 	IsMerged        bool
 	Reviewers       []string
-	CreatedAt       time.Time
-	MergedAt        time.Time
+	CreatedAt       sql.NullTime
+	MergedAt        sql.NullTime
 }

@@ -45,6 +45,7 @@ func (th TeamHandler) AddTeam(w http.ResponseWriter, r *http.Request) {
 		httputils.SendJSONError(w, errResp, 500)
 		return
 	}
+	w.WriteHeader(code)
 	fmt.Fprint(w, string(res))
 }
 
@@ -62,6 +63,7 @@ func (th TeamHandler) GetTeam(w http.ResponseWriter, r *http.Request) {
 		httputils.SendJSONError(w, errResp, 500)
 		return
 	}
+	w.WriteHeader(code)
 	fmt.Fprint(w, string(res))
 }
 

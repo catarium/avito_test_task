@@ -46,7 +46,7 @@ func (ts TeamService) AddTeam(teamName string, members []dto.TeamMember) (*dto.T
 		}
 		res.Members = append(res.Members, m)
 	}
-	return &res, nil, http.StatusOK
+	return &res, nil, http.StatusCreated
 }
 
 func (ts TeamService) GetTeam(teamName string) (*dto.Team, *dto.ErrorDto, int) {

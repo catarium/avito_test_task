@@ -18,11 +18,11 @@ func CreateTables(db *sql.DB) error {
 		);
 		CREATE TABLE IF NOT EXISTS pull_requests (
 			pull_request_id TEXT PRIMARY KEY,
-			pull_reqeust_name TEXT,
+			pull_request_name TEXT,
 			author_id TEXT,
 			is_merged BOOLEAN,
-			created_at TIMESTAMP WITHOUT TIME ZONE,
-			mereged_at TIMESTAMP WITHOUT TIME ZONE,
+			created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT now(),
+			merged_at TIMESTAMP WITHOUT TIME ZONE,
 			FOREIGN KEY (author_id) REFERENCES users (user_id)
 		);
 		CREATE TABLE IF NOT EXISTS reviewers (
