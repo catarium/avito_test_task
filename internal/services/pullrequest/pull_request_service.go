@@ -17,7 +17,7 @@ type PullRequestService struct {
 	UserRepository        *user.UserRepository
 }
 
-func (ps PullRequestService) Create(pullRequestId string, pullRequestName string, authorId string) (*dto.PullRequest, *dto.ErrorDto, int) {
+func (ps PullRequestService) Create(pullRequestId string, pullRequestName string, authorId string) (*dto.PullRequestDto, *dto.ErrorDto, int) {
 	exists, err := ps.UserRepository.Exists(authorId)
 	if err != nil {
 		return nil, services.ErrUnknown(err.Error()), http.StatusInternalServerError
@@ -36,27 +36,29 @@ func (ps PullRequestService) Create(pullRequestId string, pullRequestName string
 	if err != nil {
 		return nil, services.ErrUnknown(err.Error()), http.StatusInternalServerError
 	}
-	res := dto.PullRequest{
-		PullRequestId:   pullRequest.PullRequestId,
-		PullRequestName: pullRequest.PullRequestName,
-		AuthorId:        pullRequest.AuthorId,
-		CreatedAt:       pullRequest.CreatedAt.Time.Format(time.RFC3339),
-		MergedAt:        pullRequest.MergedAt.Time.Format(time.RFC3339),
+	res := dto.PullRequestDto{
+		Pr: dto.PullRequestContentDto{
+			PullRequestId:   pullRequest.PullRequestId,
+			PullRequestName: pullRequest.PullRequestName,
+			AuthorId:        pullRequest.AuthorId,
+			CreatedAt:       pullRequest.CreatedAt.Time.Format(time.RFC3339),
+			MergedAt:        pullRequest.MergedAt.Time.Format(time.RFC3339),
+		},
 	}
 	if pullRequest.IsMerged {
-		res.Status = dto.StatusMerged
+		res.Pr.Status = dto.StatusMerged
 	} else {
-		res.Status = dto.StatusOpen
+		res.Pr.Status = dto.StatusOpen
 	}
 	reviewers, err := ps.PullRequestRepository.Assign(pullRequestId, 2)
 	if err != nil {
 		return nil, services.ErrUnknown(err.Error()), http.StatusInternalServerError
 	}
-	res.AssignedReviewers = reviewers
+	res.Pr.AssignedReviewers = reviewers
 	return &res, nil, http.StatusCreated
 }
 
-func (ps PullRequestService) Merge(pullRequestId string) (*dto.PullRequest, *dto.ErrorDto, int) {
+func (ps PullRequestService) Merge(pullRequestId string) (*dto.PullRequestDto, *dto.ErrorDto, int) {
 	exists, err := ps.PullRequestRepository.Exists(pullRequestId)
 	if err != nil {
 		return nil, services.ErrUnknown(err.Error()), http.StatusInternalServerError
@@ -68,18 +70,20 @@ func (ps PullRequestService) Merge(pullRequestId string) (*dto.PullRequest, *dto
 	if err != nil {
 		return nil, services.ErrUnknown(err.Error()), http.StatusInternalServerError
 	}
-	res := dto.PullRequest{
-		PullRequestId:     pullRequest.PullRequestId,
-		PullRequestName:   pullRequest.PullRequestName,
-		AuthorId:          pullRequest.AuthorId,
-		CreatedAt:         pullRequest.CreatedAt.Time.Format(time.RFC3339),
-		MergedAt:          pullRequest.MergedAt.Time.Format(time.RFC3339),
-		AssignedReviewers: pullRequest.Reviewers,
+	res := dto.PullRequestDto{
+		Pr: dto.PullRequestContentDto{
+			PullRequestId:     pullRequest.PullRequestId,
+			PullRequestName:   pullRequest.PullRequestName,
+			AuthorId:          pullRequest.AuthorId,
+			CreatedAt:         pullRequest.CreatedAt.Time.Format(time.RFC3339),
+			MergedAt:          pullRequest.MergedAt.Time.Format(time.RFC3339),
+			AssignedReviewers: pullRequest.Reviewers,
+		},
 	}
 	if pullRequest.IsMerged {
-		res.Status = dto.StatusMerged
+		res.Pr.Status = dto.StatusMerged
 	} else {
-		res.Status = dto.StatusOpen
+		res.Pr.Status = dto.StatusOpen
 	}
 	return &res, nil, http.StatusOK
 }
@@ -121,7 +125,7 @@ func (ps PullRequestService) Reassign(pullRequestId string, oldReviewerId string
 		return nil, services.ErrUnknown(err.Error()), http.StatusInternalServerError
 	}
 	res := dto.PullRequestReassign{
-		Pr: dto.PullRequest{
+		Pr: dto.PullRequestContentDto{
 			PullRequestId:     pullRequest.PullRequestId,
 			PullRequestName:   pullRequest.PullRequestName,
 			AuthorId:          pullRequest.AuthorId,

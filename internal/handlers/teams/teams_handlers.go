@@ -27,7 +27,7 @@ func (th TeamHandler) AddTeam(w http.ResponseWriter, r *http.Request) {
 		httputils.SendJSONError(w, errResp, 500)
 		return
 	}
-	team := dto.Team{}
+	team := dto.TeamDto{}
 	err = json.Unmarshal(bodyBytes, &team)
 	if err != nil {
 		errResp := services.ErrInvalidJson(err.Error())

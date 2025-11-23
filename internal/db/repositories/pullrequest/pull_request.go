@@ -50,7 +50,7 @@ func (pr PullRequestRepository) Reassign(pullRequestId string, oldReviewerId str
 		u1.user_id != u2.user_id and
 		u1.user_id != pr.author_id and
 		u1.is_active = true and
-		u1.user_id not in (SELECT user_id FROM reviewers WHERE pull_request_id != $2)`
+		u1.user_id not in (SELECT user_id FROM reviewers WHERE pull_request_id = $2)`
 	row := pr.DB.QueryRow(query, oldReviewerId, pullRequestId)
 	err := row.Scan(&new_user_id)
 	if err != nil {

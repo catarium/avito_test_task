@@ -1,6 +1,6 @@
 package dto
 
 type PullRequestReassign struct {
-	Pr         PullRequest `json:"pr"`
-	ReplacedBy string      `json:"replaced_by"`
+	Pr         PullRequestContentDto `json:"pr"`
+	ReplacedBy string                `json:"replaced_by"`
 }

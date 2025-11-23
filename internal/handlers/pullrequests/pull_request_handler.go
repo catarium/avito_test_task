@@ -16,7 +16,7 @@ import (
 )
 
 type PullRequestHandler struct {
-	PullRequestService *pullrequest.PullRequestService
+	pullRequestService *pullrequest.PullRequestService
 }
 
 func (ph PullRequestHandler) Create(w http.ResponseWriter, r *http.Request) {
@@ -34,7 +34,7 @@ func (ph PullRequestHandler) Create(w http.ResponseWriter, r *http.Request) {
 		httputils.SendJSONError(w, errResp, 400)
 		return
 	}
-	pullRequest, errResp, code := ph.PullRequestService.Create(body.PullRequestId, body.PullRequestName, body.AuthorId)
+	pullRequest, errResp, code := ph.pullRequestService.Create(body.PullRequestId, body.PullRequestName, body.AuthorId)
 	if errResp != nil {
 		httputils.SendJSONError(w, errResp, code)
 		return
@@ -64,7 +64,7 @@ func (ph PullRequestHandler) Merge(w http.ResponseWriter, r *http.Request) {
 		httputils.SendJSONError(w, errResp, 400)
 		return
 	}
-	pullRequest, errResp, code := ph.PullRequestService.Merge(body.PullRequestId)
+	pullRequest, errResp, code := ph.pullRequestService.Merge(body.PullRequestId)
 	if errResp != nil {
 		httputils.SendJSONError(w, errResp, code)
 		return
@@ -94,7 +94,7 @@ func (ph PullRequestHandler) Reassign(w http.ResponseWriter, r *http.Request) {
 		httputils.SendJSONError(w, errResp, 400)
 		return
 	}
-	pullRequest, errResp, code := ph.PullRequestService.Reassign(body.PullRequestId, body.OldReviewerId)
+	pullRequest, errResp, code := ph.pullRequestService.Reassign(body.PullRequestId, body.OldReviewerId)
 	if errResp != nil {
 		httputils.SendJSONError(w, errResp, code)
 		return
@@ -112,7 +112,7 @@ func (ph PullRequestHandler) Reassign(w http.ResponseWriter, r *http.Request) {
 func CreatePullRequestRouter(db *sql.DB) *http.ServeMux {
 	mux := http.NewServeMux()
 	pullRequestHandler := PullRequestHandler{
-		PullRequestService: &pullrequest.PullRequestService{
+		pullRequestService: &pullrequest.PullRequestService{
 			PullRequestRepository: &pullRequestRepository.PullRequestRepository{DB: db},
 			UserRepository:        &user.UserRepository{DB: db},
 		},

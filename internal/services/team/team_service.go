@@ -15,8 +15,8 @@ type TeamService struct {
 	UserRepository *user.UserRepository
 }
 
-func (ts TeamService) AddTeam(teamName string, members []dto.TeamMember) (*dto.Team, *dto.ErrorDto, int) {
-	res := dto.Team{TeamName: teamName}
+func (ts TeamService) AddTeam(teamName string, members []dto.TeamMember) (*dto.TeamCreateDto, *dto.ErrorDto, int) {
+	res := dto.TeamCreateDto{Team: dto.TeamDto{TeamName: teamName}}
 	exists, err := ts.TeamRepository.Exists(teamName)
 	if err != nil {
 		return nil, services.ErrUnknown(err.Error()), http.StatusInternalServerError
@@ -44,13 +44,13 @@ func (ts TeamService) AddTeam(teamName string, members []dto.TeamMember) (*dto.T
 				return nil, services.ErrUnknown(err.Error()), http.StatusInternalServerError
 			}
 		}
-		res.Members = append(res.Members, m)
+		res.Team.Members = append(res.Team.Members, m)
 	}
 	return &res, nil, http.StatusCreated
 }
 
-func (ts TeamService) GetTeam(teamName string) (*dto.Team, *dto.ErrorDto, int) {
-	res := dto.Team{TeamName: teamName}
+func (ts TeamService) GetTeam(teamName string) (*dto.TeamDto, *dto.ErrorDto, int) {
+	res := dto.TeamDto{TeamName: teamName}
 	exists, err := ts.TeamRepository.Exists(teamName)
 	if err != nil {
 		return nil, services.ErrUnknown(err.Error()), http.StatusInternalServerError
