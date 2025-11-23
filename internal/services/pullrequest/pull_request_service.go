@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/catarium/avito_test_task/internal/db/models"
 	"github.com/catarium/avito_test_task/internal/db/repositories/pullrequest"
 	"github.com/catarium/avito_test_task/internal/db/repositories/user"
 	"github.com/catarium/avito_test_task/internal/dto"
@@ -66,7 +67,16 @@ func (ps PullRequestService) Merge(pullRequestId string) (*dto.PullRequestDto, *
 	if !exists {
 		return nil, &services.ErrNotFound, http.StatusNotFound
 	}
-	pullRequest, err := ps.PullRequestRepository.Merge(pullRequestId)
+	merged, err := ps.PullRequestRepository.IsMerged(pullRequestId)
+	var pullRequest *models.PullRequest
+	if err != nil {
+		return nil, services.ErrUnknown(err.Error()), http.StatusInternalServerError
+	}
+	if merged {
+		pullRequest, err = ps.PullRequestRepository.GetByPullRequestId(pullRequestId)
+	} else {
+		pullRequest, err = ps.PullRequestRepository.Merge(pullRequestId)
+	}
 	if err != nil {
 		return nil, services.ErrUnknown(err.Error()), http.StatusInternalServerError
 	}

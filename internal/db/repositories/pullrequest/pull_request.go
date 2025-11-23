@@ -29,6 +29,12 @@ func (pr PullRequestRepository) toModel(row db.RowOrRows) (*models.PullRequest, 
 	return &res, nil
 }
 
+func (pr PullRequestRepository) GetByPullRequestId(pullRequestId string) (*models.PullRequest, error) {
+	query := "SELECT pull_request_id, pull_request_name, author_id, is_merged, created_at, merged_at FROM pull_requests WHERE pull_request_id = $1"
+	row := pr.DB.QueryRow(query, pullRequestId)
+	return pr.toModel(row)
+}
+
 func (pr PullRequestRepository) Create(pullRequestId string, pullRequestName string, authorId string) (*models.PullRequest, error) {
 	query := `INSERT INTO pull_requests (pull_request_id, pull_request_name, author_id, is_merged)
 	VALUES ($1, $2, $3, false)

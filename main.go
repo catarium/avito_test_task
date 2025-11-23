@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"log"
@@ -17,6 +18,8 @@ import (
 func main() {
 
 	var err error
+
+	ctx := context.Background()
 
 	log.Println("connecting to db")
 	database, err := db.Connect()
@@ -45,11 +48,11 @@ func main() {
 		Handler: loggedMux,
 	}
 
-	// log.Println("starting gorutine")
-	// go func() {
-	// 	<-ctx.Done()
-	// 	server.Shutdown(ctx)
-	// }()
+	log.Println("starting gorutine")
+	go func() {
+		<-ctx.Done()
+		server.Shutdown(ctx)
+	}()
 	err = server.ListenAndServe()
 	if !errors.Is(err, http.ErrServerClosed) {
 		log.Fatal(err.Error())
